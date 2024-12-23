@@ -48,7 +48,7 @@ public class BoardManager : MonoBehaviour
 
     public void HandleCardSelection(Card selectedCard)
     {
-        if (isCheckingMatch || selectedCard.IsFaceUp || selectedCard.IsMatched) return;
+        if (selectedCard.IsMatched) return;
 
         //selectedCard.FlipCard();
 
@@ -59,11 +59,10 @@ public class BoardManager : MonoBehaviour
         else if (selectedCard2 == null)
         {
             selectedCard2 = selectedCard;
-            StartCoroutine(CheckMatch());
+            //StartCoroutine(CheckMatch());
+            CheckMatch();
         }
     }
-
-
 
     private void ShuffleCards(List<int> _cardIDs)
     {
@@ -87,7 +86,32 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    private void CheckMatch()
+    {
+        
 
+        if (selectedCard1.CardID == selectedCard2.CardID)
+        {
+            Debug.Log("Card Matched" + selectedCard1.CardID);
+            selectedCard1.SetMatched();
+            selectedCard2.SetMatched();
+        }
+        else
+        {
+            selectedCard1.UnFlipCards();
+            selectedCard2.UnFlipCards();
+        }
+
+        selectedCard1 = null;
+        selectedCard2 = null;
+
+        if (CheckGameOver())
+        {
+            GameManager.Instance.EndGame();
+        }
+    }
+
+    /*
     private IEnumerator CheckMatch()
     {
         isCheckingMatch = true;
@@ -114,6 +138,7 @@ public class BoardManager : MonoBehaviour
             GameManager.Instance.EndGame();
         }
     }
+    */
 
     private bool CheckGameOver()
     {

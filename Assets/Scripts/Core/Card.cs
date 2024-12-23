@@ -1,10 +1,12 @@
+using System.Collections;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
-    public int CardID { get; private set; }
+    //public int CardID { get; private set; }
+    public int CardID;
     public bool IsFaceUp { get; private set; }
     public bool IsMatched { get; private set; }
 
@@ -51,17 +53,55 @@ public class Card : MonoBehaviour
     public void SetMatched()
     {
         IsMatched = true;
-        UpdateCardAppearance();
+        //UpdateCardAppearance();
+
+        frontFace.enabled = false;
+        backFace.enabled = false;
+        GetComponent<Button>().enabled = false; ;
+
     }
 
-    public void FlipCard_AnimationEventHandler()
+    public void UnFlipCards()
+    {
+        cardAnimator.SetTrigger("unFlip");
+    }
+
+    public void OnFlipCard_AnimationEventHandler()
     {
         FlipCard();
     }
 
+    public void OnCardsCheck_AnimationEventHandler()
+    {
+        
+    }
+
     public void ClickCard_UIEventHandler()
     {
-        cardAnimator.SetTrigger("flip");//+FlipCard() is called in the middle of the animation as event
-        //boardManager.HandleCardSelection(this);
+        cardAnimator.SetTrigger("flip");
+        StartCoroutine(nameof(HandleCardSelectionAfterFlip));
+        //+FlipCard_AnimationEventHandler()
+        // called in the middle 
+    }
+
+    private IEnumerator HandleCardSelectionAfterFlip()
+    {
+        float animationLength = GetAnimationClipLength(cardAnimator, "cardAnimation");
+        Debug.Log("Checking coroutineStarted" + animationLength);
+        yield return new WaitForSeconds(animationLength);
+        boardManager.HandleCardSelection(this);
+    }
+
+    private float GetAnimationClipLength(Animator animator, string clipName)
+    {
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == clipName)
+            {
+                return clip.length; 
+            }
+        }
+
+        return -1f; 
     }
 }

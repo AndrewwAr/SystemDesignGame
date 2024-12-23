@@ -19,8 +19,7 @@ public class PlayerInput : MonoBehaviour
                 Card card = hit.collider.GetComponent<Card>();
                 if (card != null)
                 {
-                    BoardManager boardManager = FindObjectOfType<BoardManager>();
-                    boardManager.HandleCardSelection(card);
+                   
                 }
             }
         }
