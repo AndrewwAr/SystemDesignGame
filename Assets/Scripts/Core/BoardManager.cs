@@ -4,18 +4,35 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    public GameObject cardPrefab;
-    public Transform boardParent;
-    public int rows = 2;
-    public int columns = 4;
+    [SerializeField]
+    CardsData cardsData;
+    [SerializeField]
+    int rows = 2;
+    [SerializeField]
+    int columns = 4;
 
     private List<Card> cards = new List<Card>();
     private Card selectedCard1, selectedCard2;
     private bool isCheckingMatch;
 
+
+    private CardsPlacer placer;
+
+
+    private void Start()
+    {
+        ShuffleCardsFrontSprites(cardsData.CardsFront);
+    }
+
     public void GenerateBoard()
     {
+
+        placer = FindObjectOfType<CardsPlacer>();
+
         List<int> cardIDs = new List<int>();
+
+        
+
         for (int i = 0; i < (rows * columns) / 2; i++)
         {
             cardIDs.Add(i);
@@ -24,7 +41,7 @@ public class BoardManager : MonoBehaviour
 
         ShuffleCards(cardIDs);
 
-        InistantiateCards(cardIDs);
+        cards = placer.InstantiateCardsInPositions(rows, columns, cardIDs , cardsData);
 
 
     }
@@ -33,7 +50,7 @@ public class BoardManager : MonoBehaviour
     {
         if (isCheckingMatch || selectedCard.IsFaceUp || selectedCard.IsMatched) return;
 
-        selectedCard.FlipCard();
+        //selectedCard.FlipCard();
 
         if (selectedCard1 == null)
         {
@@ -50,7 +67,6 @@ public class BoardManager : MonoBehaviour
 
     private void ShuffleCards(List<int> _cardIDs)
     {
-        // Shuffle the card IDs
         for (int i = 0; i < _cardIDs.Count; i++)
         {
             int randomIndex = Random.Range(0, _cardIDs.Count);
@@ -60,23 +76,23 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void InistantiateCards(List<int> _cardIDs)
+    private void ShuffleCardsFrontSprites(Sprite[] _cardsSprite)
     {
-        for (int i = 0; i < _cardIDs.Count; i++)
+        for (int i = 0; i < _cardsSprite.Length; i++)
         {
-            GameObject cardObj = Instantiate(cardPrefab, boardParent);
-            Card card = cardObj.GetComponent<Card>();
-            card.Initialize(_cardIDs[i]);
-            cards.Add(card);
+            int randomIndex = Random.Range(0, _cardsSprite.Length);
+            Sprite temp = _cardsSprite[i];
+            _cardsSprite[i] = _cardsSprite[randomIndex];
+            _cardsSprite[randomIndex] = temp;
         }
     }
+
 
     private IEnumerator CheckMatch()
     {
         isCheckingMatch = true;
 
-        // Wait for a brief moment to let players see the second card
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(3.0f);
 
         if (selectedCard1.CardID == selectedCard2.CardID)
         {

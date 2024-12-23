@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public int score { get; private set; }
     private bool isGameOver;
 
+    BoardManager boardManager;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -19,11 +20,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        StartGame();
+    }
+
     public void StartGame()
     {
         score = 0;
         isGameOver = false;
-        BoardManager boardManager = FindObjectOfType<BoardManager>();
+        boardManager = FindObjectOfType<BoardManager>();
         boardManager.GenerateBoard();
     }
 

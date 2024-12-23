@@ -1,4 +1,6 @@
+using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
@@ -6,14 +8,35 @@ public class Card : MonoBehaviour
     public bool IsFaceUp { get; private set; }
     public bool IsMatched { get; private set; }
 
-    [SerializeField] private GameObject frontFace;
-    [SerializeField] private GameObject backFace;
+    [SerializeField]
+    private Image frontFace;
+    [SerializeField]
+    private Image backFace;
 
-    public void Initialize(int cardID)
+
+    private Animator cardAnimator;
+    BoardManager boardManager;
+
+    private void Start()
     {
-        CardID = cardID;
+        cardAnimator = GetComponent<Animator>();
+        boardManager = FindObjectOfType<BoardManager>();
+    }
+
+    private void UpdateCardAppearance()
+    {
+        frontFace.enabled = IsFaceUp;
+        backFace.enabled = !IsFaceUp;
+    }
+
+
+    public void Initialize(int _cardID, Sprite _cardFrontSprite, Sprite _cardBackSprite)
+    {
+        CardID = _cardID;
         IsFaceUp = false;
         IsMatched = false;
+        frontFace.sprite = _cardFrontSprite;
+        backFace.sprite = _cardBackSprite;
         UpdateCardAppearance();
     }
 
@@ -31,9 +54,14 @@ public class Card : MonoBehaviour
         UpdateCardAppearance();
     }
 
-    private void UpdateCardAppearance()
+    public void FlipCard_AnimationEventHandler()
     {
-        frontFace.SetActive(IsFaceUp);
-        backFace.SetActive(!IsFaceUp);
+        FlipCard();
+    }
+
+    public void ClickCard_UIEventHandler()
+    {
+        cardAnimator.SetTrigger("flip");//+FlipCard() is called in the middle of the animation as event
+        //boardManager.HandleCardSelection(this);
     }
 }

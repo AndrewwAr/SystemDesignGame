@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,9 +6,9 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    public Text scoreText;
+    public TMP_Text scoreText;
     public GameObject endGamePanel;
-    public Text endGameMessage;
+    public TMP_Text endGameMessage;
 
     private void Awake()
     {
