@@ -17,12 +17,15 @@ public class Card : MonoBehaviour
 
 
     private Animator cardAnimator;
-    BoardManager boardManager;
+    private BoardManager boardManager;
+    private AudioManager audioManager;
+
 
     private void Start()
     {
         cardAnimator = GetComponent<Animator>();
         boardManager = FindObjectOfType<BoardManager>();
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     private void UpdateCardAppearance()
@@ -52,6 +55,10 @@ public class Card : MonoBehaviour
 
     public void SetMatched()
     {
+
+        audioManager.PlayAudioSoundEffect(GameAudioClips.matching);
+
+
         IsMatched = true;
         //UpdateCardAppearance();
 
@@ -63,6 +70,8 @@ public class Card : MonoBehaviour
 
     public void UnFlipCards()
     {
+        audioManager.PlayAudioSoundEffect(GameAudioClips.misMatching);
+
         cardAnimator.SetTrigger("unFlip");
     }
 
@@ -71,23 +80,21 @@ public class Card : MonoBehaviour
         FlipCard();
     }
 
-    public void OnCardsCheck_AnimationEventHandler()
-    {
-        
-    }
+    
 
     public void ClickCard_UIEventHandler()
     {
-        cardAnimator.SetTrigger("flip");
-        StartCoroutine(nameof(HandleCardSelectionAfterFlip));
-        //+FlipCard_AnimationEventHandler()
-        // called in the middle 
+        audioManager.PlayAudioSoundEffect(GameAudioClips.cardFlip);
+
+        cardAnimator.SetTrigger("flip");//+FlipCard_AnimationEventHandler() called in the middle of the animation
+
+        StartCoroutine(nameof(HandleCardSelectionAfterFlip)); 
     }
 
     private IEnumerator HandleCardSelectionAfterFlip()
     {
         float animationLength = GetAnimationClipLength(cardAnimator, "cardAnimation");
-        Debug.Log("Checking coroutineStarted" + animationLength);
+        //Debug.Log("Checking coroutineStarted" + animationLength);
         yield return new WaitForSeconds(animationLength);
         boardManager.HandleCardSelection(this);
     }

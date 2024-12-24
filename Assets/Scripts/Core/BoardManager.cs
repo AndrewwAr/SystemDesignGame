@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
+    
+
     [SerializeField]
     CardsData cardsData;
     [SerializeField]
@@ -14,8 +16,6 @@ public class BoardManager : MonoBehaviour
     private List<Card> cards = new List<Card>();
     private Card selectedCard1, selectedCard2;
     private bool isCheckingMatch;
-
-
     private CardsPlacer placer;
 
 
@@ -92,9 +92,10 @@ public class BoardManager : MonoBehaviour
 
         if (selectedCard1.CardID == selectedCard2.CardID)
         {
-            Debug.Log("Card Matched" + selectedCard1.CardID);
+            //Debug.Log("Card Matched" + selectedCard1.CardID);
             selectedCard1.SetMatched();
             selectedCard2.SetMatched();
+            GameManager.Instance.IncreamentScore();
         }
         else
         {
