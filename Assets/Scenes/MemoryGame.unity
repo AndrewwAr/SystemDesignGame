@@ -1337,8 +1337,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardsData: {fileID: 11400000, guid: f460d9aada48bb34982824890c057579, type: 2}
-  rows: 2
-  columns: 3
+  rows: 5
+  columns: 6
 --- !u!1 &1215030518
 GameObject:
   m_ObjectHideFlags: 0
